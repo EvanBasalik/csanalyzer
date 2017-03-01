@@ -20,7 +20,7 @@ Param(
 )
 
 
-#LINQ isn't loaded automatically for some reason, so force it
+#LINQ isn't loaded automatically, so force it
 [Reflection.Assembly]::Load("System.Xml.Linq, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089") | Out-Null
 
 #internal variables
@@ -35,8 +35,9 @@ Param(
 #XML must be generated using "csexport "Name of Connector" export.xml /f:x"
 write-host "Importing XML" -ForegroundColor Yellow
 
-#for some reason XmlReader.Create won't properly resolve the file location, so resolve it
-$resolvedXMLtoimport=Resolve-Path -Path $xmltoimport
+#XmlReader.Create won't properly resolve the file location,
+#so expand and then resolve it
+$resolvedXMLtoimport=Resolve-Path -Path ([Environment]::ExpandEnvironmentVariables($xmltoimport))
 
 #use an XmlReader to deal with even large files
 $result=$reader = [System.Xml.XmlReader]::Create($resolvedXMLtoimport) 
